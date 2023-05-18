@@ -14,11 +14,11 @@ if (user_id != null) {
           .then((res) => {
             let property = res[0].features[0].properties;
             propObj = {
-              full_name: property.full_name,
-              viloyat: property.viloyat,
-              tuman: property.tuman,
-              total_farmland_areas: property.total_farmland_areas,
               cadastral_number: property.cadastral_number,
+              legal_area: property.legal_area,
+              tuman: property.tuman,
+              arable_areas_with_water: property.arable_areas_with_water,
+              baunit_type_title: property.baunit_type_title,
             };
             makeFeatureTable(propObj);
           });
@@ -81,12 +81,13 @@ function makeFeatureTable(featureObj) {
   );
   if (elFarmerTableTbody != null) {
     elFarmerTableTbody.innerHTML = "";
-    userFeaturesList.forEach((feature) => {
+    userFeaturesList.forEach((feature, index) => {
       elFarmerTableTbody.innerHTML += `<tr>
-          <td>${feature.full_name}</td>
-          <td>${feature.viloyat}</td>
-          <td>${feature.tuman}</td>
-          <td>${feature.total_farmland_areas} ga</td>
+          <td>${index+1}</td>
+          <td>${feature.cadastral_number}</td>
+          <td>${feature.legal_area}</td>
+          <td>${feature.arable_areas_with_water}</td>
+          <td>${feature.baunit_type_title} ga</td>
           <td>
             <a href="/user/polygon?cad_number=${feature.cadastral_number}">
               <img src="../static/images/eye.svg" alt="">
