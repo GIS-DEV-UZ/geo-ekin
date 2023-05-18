@@ -6,12 +6,14 @@ from src.models.user import User
 from src.models.polygon import Polygon
 from src.views.user import user_polygon_info_temp
 
+import pprint
 user_route = Blueprint("user_route", __name__, url_prefix="/user")
 
 
 @user_route.route("/params", methods=["GET"])
 def get_params():
     data = oneid.Params_To_Dict(request.args)
+    pprint.pprint(data)
     user_req = User.query.filter_by(user_id=data["user_id"]).first()
     if user_req:
         login_user(user_req)
