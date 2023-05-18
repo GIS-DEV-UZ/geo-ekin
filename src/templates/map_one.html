@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% block container %}
+<div class="user_polygon">
+  <div id="user-polygon-map"></div>
+</div>
+<script>
+  let user_polygon_map = L.map("user-polygon-map").setView(
+    [41.311081, 69.240562],
+    13
+  );
+
+  L.tileLayer("http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}", {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(user_polygon_map);
+
+  const cad_number = "{{ cad_number }}";
+
+  if (cad_number) {
+    fetch(
+      `https://map.agro.uz/api/land_user/read_geom_all?prefix=${cad_number}`
+    )
+      .then((data) => data.json())
+      .then((geojsonFeature) => {
+        let polygon = null;
+        polygon = L.geoJSON(geojsonFeature).addTo(user_polygon_map);
+        polygon.setStyle({ fillColor: "blue" });
+        user_polygon_map.fitBounds(polygon.getBounds());
+      });
+  }
+</script>
+{% endblock container %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %} {% block container %}
+
+<hr class="profile-line" />
+<div class="profile">
+  <div class="profile-top">
+    <img
+      src="../static/images/user.jpg"
+      alt="user"
+      class="user-img"
+      width="200"
+      height="200"
+    />
+    <div class="user-info">
+      <h2 class="user-name">{{current_user.full_name}}</h2>
+      <span class="user-phone-text">Tel:</span>
+      <a href="tel:{{current_user.phone_number}}" class="user-phone"
+        >{{current_user.phone_number}}</a
+      >
+    </div>
+  </div>
+  <hr class="profile-line" />
+  <div class="profile-bottom">
+    <!-- Button trigger modal -->
+    <div class="profile-bottom-actions">
+      <button
+        type="button"
+        class="btn btn-primary open-map-modal"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        Qo'shish
+      </button>
+
+      <a class="btn btn-info" href="{{url_for('user_route.polygon_all')}}" type="button">
+        Hammasini ko'rish
+      </a>
+    </div>
+
+    <table class="profile-farmer__table">
+      <thead>
+        <tr>
+          <th>full_name</th>
+          <th>viloyat</th>
+          <th>tuman</th>
+          <th>total_farmland_areas</th>
+          <th>Ko'rish</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

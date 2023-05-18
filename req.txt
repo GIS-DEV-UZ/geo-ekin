@@ -1,0 +1,7 @@
+email-validator==2.0.0.post2
+flask-admin==1.6.1
+flask-login==0.6.2
+flask-oneid==1.0.3
+flask-sqlalchemy==3.0.3
+flask-wtf==1.1.1
+pip-chill==1.0.3

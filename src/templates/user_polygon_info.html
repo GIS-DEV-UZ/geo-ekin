@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block container %}
+
+<table class="user__polygon-info-table table align-middle mt-5 mb-0 bg-white">
+    <thead class="bg-light">
+        <tr>
+            <th class="text-center">Name</th>
+            <th class="text-center">Title</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+    </tbody>
+</table>
+
+<script>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const cad_number = urlParams.get('cad_number')
+    
+    if (cad_number) {
+        fetch(`https://map.agro.uz/api/land_user/read_geom_all?prefix=${cad_number}`)
+            .then(data => data.json())
+            .then(geojsonFeature => {
+                let propertyObj = geojsonFeature[0].features[0].properties
+
+                for (const [key, value] of Object.entries(propertyObj)) {
+                    if(value != null) {
+                        document.querySelector('.user__polygon-info-table tbody ').innerHTML += `
+                        <tr>
+                            <td>
+                                ${key}
+                            </td>
+                            <td>
+                                <p class="fw-normal mb-1">${value}</p>
+                            </td>
+                        </tr>
+                    `
+                    }
+                    
+                }
+            })
+    }
+</script>
+
+{% endblock %}
