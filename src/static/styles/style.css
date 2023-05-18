@@ -791,3 +791,10 @@ td {
   right: 0;
   top: 0;
 }
+
+/* POPUP TABLE */
+
+.popup__table th, .popup__table td {
+  border: 1px solid;
+  padding: 10px;
+}

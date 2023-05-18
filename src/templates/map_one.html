@@ -3,29 +3,57 @@
   <div id="user-polygon-map"></div>
 </div>
 <script>
+
+  let polygon = null;
   let user_polygon_map = L.map("user-polygon-map").setView(
     [41.311081, 69.240562],
     13
   );
 
   L.tileLayer("http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(user_polygon_map);
 
   const cad_number = "{{ cad_number }}";
 
   if (cad_number) {
     fetch(
-      `https://map.agro.uz/api/land_user/read_geom_all?prefix=${cad_number}`
-    )
+        `https://map.agro.uz/api/land_user/read_geom_all?prefix=${cad_number}`
+      )
       .then((data) => data.json())
       .then((geojsonFeature) => {
-        let polygon = null;
-        polygon = L.geoJSON(geojsonFeature).addTo(user_polygon_map);
-        polygon.setStyle({ fillColor: "blue" });
+        
+        polygon = L.geoJSON(geojsonFeature, {
+          onEachFeature: function(feature,layer){
+            layer.on('click', function(evt) {
+              let property = evt.target.feature.properties
+              console.log(property)
+              let template = `
+                            <table class="popup__table">
+                              <tr>
+                                <th>baunit_type_title</th>
+                                <td>${property.baunit_type_title}</td>
+                              </tr>
+                              <tr>
+                                <th>cadastral_number</th>
+                                <td>${property.cadastral_number}</td>
+                              </tr>
+                            </table>
+                            `
+              polygon.bindPopup(template).openPopup();
+            });
+          }
+        }).addTo(user_polygon_map);
+        polygon.setStyle({
+          fillColor: "blue"
+        });
         user_polygon_map.fitBounds(polygon.getBounds());
+        
       });
+      
   }
+
+  
+
 </script>
 {% endblock container %}
