@@ -58,11 +58,10 @@ $(".search_cadastr").click(function (e) {
 $(".save-polygon").click(function (e) {
   const properties = geojsonFeatures[0].features[0].properties;
   propObj = {
-    full_name: properties.full_name,
-    viloyat: properties.viloyat,
-    tuman: properties.tuman,
-    total_farmland_areas: properties.total_farmland_areas,
     cadastral_number: properties.cadastral_number,
+    legal_area: properties.legal_area,
+    arable_areas_with_water: properties.arable_areas_with_water,
+    baunit_type_title: properties.baunit_type_title,
   };
 
   makeFeatureTable(propObj);
