@@ -10,4 +10,6 @@ class UserAdminView(BaseModelView):
 
 def register_admin(admin):
     from src.models.user import User
-    admin.add_view(UserAdminView(User, db.session))
+    from src.models.polygon import Polygon
+    admin.add_view(ModelView(User, db.session))
+    admin.add_view(ModelView(Polygon, db.session))

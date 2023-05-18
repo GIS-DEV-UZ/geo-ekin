@@ -3,6 +3,7 @@ from src.utils.ext import register_blueprints, register_extensions
 from src.utils.ext import oneid
 
 
+
 def create_app(config:str):
 
     app = Flask(__name__)
@@ -13,6 +14,7 @@ def create_app(config:str):
 
     register_blueprints(app)
     register_extensions(app)
+
 
     with app.app_context():
         from src.utils.ext import db
