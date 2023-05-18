@@ -1,5 +1,5 @@
 var map = null;
-var geojsonFeature = null;
+var geojsonFeatures = null;
 var userFeaturesList = [];
 
 if (user_id != null) {
@@ -48,6 +48,7 @@ $(".search_cadastr").click(function (e) {
   )
     .then((res) => res.json())
     .then((geojsonFeature) => {
+      geojsonFeatures = geojsonFeature
       polygon = L.geoJSON(geojsonFeature).addTo(map);
       polygon.setStyle({ fillColor: "blue" });
       map.fitBounds(polygon.getBounds());
@@ -55,7 +56,7 @@ $(".search_cadastr").click(function (e) {
 });
 
 $(".save-polygon").click(function (e) {
-  const properties = geojsonFeature[0].features[0].properties;
+  const properties = geojsonFeatures[0].features[0].properties;
   propObj = {
     full_name: properties.full_name,
     viloyat: properties.viloyat,
