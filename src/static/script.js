@@ -20,6 +20,8 @@ if (user_id != null) {
               arable_areas_with_water: property.arable_areas_with_water,
               baunit_type_title: property.baunit_type_title,
             };
+
+
             makeFeatureTable(propObj);
           });
       });
@@ -57,20 +59,54 @@ $(".search_cadastr").click(function (e) {
 
 $(".save-polygon").click(function (e) {
   const properties = geojsonFeatures[0].features[0].properties;
+<<<<<<< HEAD
   propObj = {
     cadastral_number: properties.cadastral_number,
     legal_area: properties.legal_area,
     arable_areas_with_water: properties.arable_areas_with_water,
     baunit_type_title: properties.baunit_type_title,
+=======
+  console.log(properties);
+  propObj2 = {
+    cadastral_number: properties.cadastral_number,
+    legal_area: properties.legal_area,
+    arable_areas_with_water: properties.arable_areas_with_water,
+    baunit_type_title: properties.baunit_type_title
+>>>>>>> c03e4d0 (fixed modal input and added alert messages)
   };
 
-  makeFeatureTable(propObj);
+  let isPolygonHave = false
+  
+  userFeaturesList.forEach((feature, index) => {
+    if(feature.cadastral_number == properties.cadastral_number) {
+      document.querySelector('.profile__msg').classList.add('profile__msg-show')
+      document.querySelector('.profile__msg-content').textContent = "Bunday POLYGON allaqachon qo'shilgan"
+      isPolygonHave = true
+    }
+  })
+
+  if (!isPolygonHave){
+    makeFeatureTable(propObj2);
+    document.querySelector('.profile__msg').classList.add('profile__msg-show')
+    document.querySelector('.profile__msg-content').classList.remove('alert-warning')
+    document.querySelector('.profile__msg-content').classList.add('alert-success')
+    document.querySelector('.profile__msg-content').textContent = ''
+    document.querySelector('.profile__msg-content').textContent = "Polygon qo'shildi"
+  }
+
+  setTimeout(()=>{
+    document.querySelector('.profile__msg').classList.add('profile__msg-hide')
+  },5000)
+  $(".cad_number").val(' ')
+
+  
 
   fetch(`/save_polygon/${properties.cadastral_number}`)
     .then((res) => res.json())
     .then((res) => {
       console.log(res);
     });
+
 });
 
 function makeFeatureTable(featureObj) {

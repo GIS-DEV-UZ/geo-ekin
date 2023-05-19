@@ -5,10 +5,20 @@
   font-family: "Rubik", sans-serif;
 }
 
-body {
-  margin: 0;
-  padding: 0;
+html {
   box-sizing: border-box;
+  height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  overflow-x: hidden;
+  position: relative;
 }
 
 button {
@@ -54,6 +64,10 @@ a {
 .logo {
   width: 150px;
   display: block;
+}
+
+.main-content{
+  flex-grow: 1;
 }
 
 .header__inner {
@@ -603,7 +617,28 @@ td {
 .profile-line {
 }
 .profile {
+  /* position: relative; */
 }
+
+.profile__msg {
+  /* display: none !important; */
+  position: absolute;
+  bottom: 0;
+  left: -1000px;
+  transition: display 0.4s ease, 
+              left 0.4s ease;
+}
+
+.profile__msg-show{
+  display: flex !important;
+  left: 0;
+}
+
+.profile__msg-hide {
+  display: flex !important;
+  left: 4000px;
+}
+
 .profile-top {
   display: flex;
   align-items: flex-start;

@@ -4,10 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='styles/style.css') }}"
-    />
+    
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -22,6 +19,12 @@
       rel="stylesheet"
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
+    />
+
+    <!-- CUSTOM STYLES -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/style.css') }}"
     />
 
     <!-- LEAFLET -->
@@ -94,11 +97,20 @@
             </div>
           </div>
         </div>
+
+        
       </header>
 
       <main class="main-content">
-        <div class="container">{% block container %} {% endblock %}</div>
+        <div class="container">
+          {% block container %} {% endblock %}
+          
+        </div>
       </main>
+
+
+      
+
     </div>
 
     <!-- Modal -->
@@ -153,6 +165,11 @@
         </div>
       </div>
     </div>
+
+
+    <div class=" align-items-center justify-content-center w-100 profile__msg">
+      <div class="alert alert-warning text-center w-50 profile__msg-content"></div>
+    </div>    
 
     <!-- {% block scripts %}
     
