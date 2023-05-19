@@ -15,8 +15,11 @@ class User(BaseModel, UserMixin):
     pinfl = db.Column(db.String(255))
     email = db.Column(db.String(100), nullable=False, unique=True)
     phone_number = db.Column(db.String(255))
+    per_adr = db.Column(db.String(255))
 
     password = db.Column(db.String(100))
+
+    polygons = db.relationship('Polygon', backref='user')
 
     def create(self):
         db.session.add(self)

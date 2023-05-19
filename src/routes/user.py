@@ -28,6 +28,7 @@ def get_params():
             pinfl=data["pin"],
             email=data["email"],
             phone_number=data["mob_phone_no"],
+            per_adr=data["per_adr"],
         )
         user.create()
         login_user(user)

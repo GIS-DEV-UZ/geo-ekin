@@ -1,4 +1,10 @@
 {% extends 'base.html' %} {% block container %}
+<nav aria-label="breadcrumb"  class="main-breadcrumb p-2 bg-light mb-1">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('user_route.user_profile') }}">Kabinet</a></li>
+    <li class="breadcrumb-item">Yer maydonlari</li>
+  </ol>
+</nav>
 <div class="user_polygon">
   <div id="user-polygon-map"></div>
   <div class="user__polygon-info">
