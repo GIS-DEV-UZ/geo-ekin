@@ -798,3 +798,12 @@ td {
   border: 1px solid;
   padding: 10px;
 }
+
+
+.leaflet-tooltip.my-labels {
+  background-color: transparent;
+  border: transparent;
+  box-shadow: none;
+  color: white;
+  font-size: 14px;
+}

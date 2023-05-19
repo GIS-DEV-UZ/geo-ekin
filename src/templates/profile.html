@@ -4,7 +4,7 @@
 <div class="profile">
   <div class="profile-top">
     <img
-      src="../static/images/user.jpg"
+      src="../static/images/default.png"
       alt="user"
       class="user-img"
       width="200"
@@ -12,14 +12,14 @@
     />
     <div class="user-info">
       <h2 class="user-name">{{current_user.full_name}}</h2>
-      <span class="user-phone-text">Tel:</span>
-      <a href="tel:{{current_user.phone_number}}" class="user-phone"
-        >{{current_user.phone_number}}</a
-      >
+      <p><b>Manzil</b>: {{current_user.per_adr}}</p>
+      <p><b>Telefon raqami</b>: {{current_user.phone_number}}</p>
+      <p><b>Elektron pochta</b>: {{current_user.email}}</p>
     </div>
   </div>
   <hr class="profile-line" />
   <div class="profile-bottom">
+    <h2 class="text-center">Yer maydonlari ro`yxati. Jami: {{ current_user.polygons|length}} ta</h2>
     <!-- Button trigger modal -->
     <div class="profile-bottom-actions">
       <button

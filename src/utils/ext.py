@@ -11,13 +11,13 @@ login_manager = LoginManager()
 
 
 
-from src.utils.admin import register_admin
+from src.utils.admin import MyAdminIndexView, register_admin
 
 
 def register_extensions(app):
 
     db.init_app(app)
-    admin.init_app(app)
+    admin.init_app(app, index_view=MyAdminIndexView())
     oneid.init_app(app)
     login_manager.init_app(app)
     register_admin(admin)

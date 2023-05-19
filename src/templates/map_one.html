@@ -1,6 +1,53 @@
 {% extends 'base.html' %} {% block container %}
-<div class="user_polygon">
-  <div id="user-polygon-map"></div>
+<style>
+  .vertical-menu {
+  width: 100%; /* Set a width if you like */
+  height: 80vh;
+  overflow-y: scroll;
+}
+
+ p {
+  background-color: #eee; /* Grey background color */
+  color: black; /* Black text color */
+  display: block; /* Make the links appear below each other */
+  padding: 12px; /* Add some padding */
+  text-decoration: none; /* Remove underline from links */
+  cursor: pointer;
+}
+
+p:last-child{
+  margin-bottom: 0;
+}
+
+.vertical-menu p:hover {
+  background-color: #ccc; /* Dark grey background on mouse-over */
+}
+
+p.active {
+  background-color: #04AA6D; /* Add a green color to the "active/current" link */
+  color: white;
+}
+</style>
+<nav aria-label="breadcrumb"  class="main-breadcrumb p-2 bg-light mb-1">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('user_route.user_profile') }}">Kabinet</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('user_route.polygon_all') }}">Yer maydonlari</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ cad_number }}</li>
+  </ol>
+</nav>
+<div class="row">
+  <div class="col-9">
+    <div class="user_polygon">
+      <div id="user-polygon-map"></div>
+    </div>
+  </div>
+  <div class="col-3">
+    <p class="active">Konturlar</p>
+    <div class="vertical-menu contour-box">
+      
+    </div>
+  </div>
+</div>
 </div>
 <script>
 
@@ -17,17 +64,19 @@
   const cad_number = "{{ cad_number }}";
 
   if (cad_number) {
+
+    // GET POLYGON
+
     fetch(
-        `https://map.agro.uz/api/land_user/read_geom_all?prefix=${cad_number}`
-      )
+      `https://map.agro.uz/api/land_user/read_geom_all?prefix=${cad_number}`
+    )
       .then((data) => data.json())
       .then((geojsonFeature) => {
         
         polygon = L.geoJSON(geojsonFeature, {
-          onEachFeature: function(feature,layer){
-            layer.on('click', function(evt) {
+          onEachFeature: function (feature, layer) {
+            layer.on('click', function (evt) {
               let property = evt.target.feature.properties
-              console.log(property)
               let template = `
                             <table class="popup__table">
                               <tr>
@@ -45,15 +94,78 @@
           }
         }).addTo(user_polygon_map);
         polygon.setStyle({
-          fillColor: "blue"
+          fillColor: "transparent",
+          color: '#44e320',
+          weight: 4
         });
         user_polygon_map.fitBounds(polygon.getBounds());
-        
+
       });
+
+
+    // GET POLYGON CONOURS
+
+    let contours_polygon = null
+
+    fetch(`/get_contours/?cadastral_number=${cad_number}`)
+      .then((data) => data.json())
+      .then((feature) => {
+        countourBoxData(feature.data.features)
+        let contourFeature = feature.data
+        contours_polygon = L.geoJSON(contourFeature, {
+          onEachFeature: (feature, layer) => {
+            
+            contour_number = `${feature.properties.contour_number}`
+            layer.bindTooltip(
+              contour_number,
+              {
+                permanent: true,
+                direction: "center",
+                className: "my-labels"
+              }
+            ).openTooltip()
+
+          },
+          style: {
+            fillColor: "transparent",
+            color: "red",
+            weight: 2,
+            dashArray: 4
+          }
+        }).addTo(user_polygon_map);
+
+        
+      })
+
+      function countourBoxData(features){
+
+        features.forEach((feature) => {
+          document.querySelector('.contour-box').innerHTML += `
+            <p class="contour_num-p" onclick="layerOnClick(${feature.properties.contour_number})">${feature.properties.contour_number}-kontur, ${feature.properties.area} gektar</p>
+          `
+        })
+      }
+
       
+
+      function layerOnClick(contour_num) {        
+        user_polygon_map.eachLayer((layer)=>{
+          let feature = layer.feature
+          if(feature && feature.properties.contour_number == contour_num) {
+            user_polygon_map.fitBounds(layer.getBounds());
+            contours_polygon.resetStyle()
+            layer.setStyle({
+              fillColor : 'blue'
+            })
+          }
+        })
+        
+      }
+
   }
 
-  
+
 
 </script>
 {% endblock container %}
+
