@@ -34,7 +34,7 @@ a {
   display: none;
 }
 
-.container {
+.custom-container {
   width: 100%;
   max-width: 1280px;
   padding-left: 40px;
@@ -44,6 +44,10 @@ a {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   /* border: 1px solid black; */
+}
+
+.container-fluid {
+  height: 100%;
 }
 
 .flex__row {
@@ -66,7 +70,7 @@ a {
   display: block;
 }
 
-.main-content{
+.main-content {
   flex-grow: 1;
 }
 
@@ -609,13 +613,12 @@ td {
   text-align: center;
 }
 
-.add__cluster {
-}
+.add__cluster {}
 
 /* PROFILE */
 
-.profile-line {
-}
+.profile-line {}
+
 .profile {
   /* position: relative; */
 }
@@ -625,11 +628,11 @@ td {
   position: absolute;
   bottom: 0;
   left: -1000px;
-  transition: display 0.4s ease, 
-              left 0.4s ease;
+  transition: display 0.4s ease,
+    left 0.4s ease;
 }
 
-.profile__msg-show{
+.profile__msg-show {
   display: flex !important;
   left: 0;
 }
@@ -654,8 +657,9 @@ td {
   margin-right: 50px;
   object-fit: cover;
 }
-.user-info {
-}
+
+.user-info {}
+
 .user-name {
   margin: 0;
   margin-bottom: 10px;
@@ -690,6 +694,7 @@ td {
   color: #ffffff;
   text-align: left;
 }
+
 .profile-farmer__table thead tr {
   background-color: #009879;
   color: #ffffff;
@@ -701,6 +706,7 @@ td {
   padding: 12px 15px;
   text-align: center;
 }
+
 .profile-farmer__table tbody tr {
   border-bottom: 1px solid #dddddd;
 }
@@ -712,6 +718,7 @@ td {
 .profile-farmer__table tbody tr:last-of-type {
   border-bottom: 2px solid #009879;
 }
+
 .profile-farmer__table tbody tr.active-row {
   font-weight: bold;
   color: #009879;
@@ -738,7 +745,7 @@ td {
 .user_polygon {
   position: relative;
   width: 100%;
-  height: 800px;
+  height: 100%;
 }
 
 #user-polygon-map {
@@ -772,11 +779,12 @@ td {
 
 .popup_table {
   border-collapse: collapse;
-  
-  
+
+
 }
 
-.popup_table th, .popup_table td {
+.popup_table th,
+.popup_table td {
   border: 1px solid black;
   padding: 10px;
 }
@@ -789,13 +797,16 @@ td {
   line-height: 24px;
   border-radius: 0px;
 }
+
 .another-popup .leaflet-popup-content-wrapper a {
   color: rgba(200, 200, 200, 0.1);
 }
+
 .another-popup .leaflet-popup-tip-container {
   width: 100px;
   height: 15px;
 }
+
 .another-popup .leaflet-popup-tip {
   background: transparent;
   border: none;
@@ -829,7 +840,8 @@ td {
 
 /* POPUP TABLE */
 
-.popup__table th, .popup__table td {
+.popup__table th,
+.popup__table td {
   border: 1px solid;
   padding: 10px;
 }
@@ -841,4 +853,125 @@ td {
   box-shadow: none;
   color: white;
   font-size: 14px;
+}
+
+
+
+.vertical-menu {
+  width: 100%;
+  /* Set a width if you like */
+  height: 95%;
+  overflow-y: scroll;
+}
+
+.vertical-menu p {
+  background-color: #eee;
+  /* Grey background color */
+  color: black;
+  /* Black text color */
+  display: block;
+  /* Make the links appear below each other */
+  padding: 12px;
+  /* Add some padding */
+  text-decoration: none;
+  /* Remove underline from links */
+  cursor: pointer;
+}
+
+.vertical-menu p:last-child {
+  margin-bottom: 0;
+}
+
+.vertical-menu p:hover {
+  background-color: #ccc;
+  /* Dark grey background on mouse-over */
+}
+
+.vertical-menu p.active {
+  background-color: #04AA6D;
+  /* Add a green color to the "active/current" link */
+  color: white;
+}
+
+/* USER POLYGON MAP */
+
+.user__container-inner {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: #868e96;
+}
+
+.user__polygon-container {
+  width: 100%;
+  height: 100%;
+  background-color: #eee;
+}
+
+.polygon__heading {
+  text-align: center;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.user__polygon-row {
+  height: 95%;
+}
+
+
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #f1f1f1;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
+.sidebar a {
+  display: block;
+  color: black;
+  padding: 16px;
+  text-decoration: none;
+}
+
+.sidebar a.active {
+  background-color: #04AA6D;
+  color: white;
+}
+
+.sidebar a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+
+div.content {
+  margin-left: 200px;
+  padding: 1px 16px;
+  height: 1000px;
+}
+
+@media screen and (max-width: 700px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .sidebar a {
+    float: left;
+  }
+
+  div.content {
+    margin-left: 0;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .sidebar a {
+    text-align: center;
+    float: none;
+  }
 }

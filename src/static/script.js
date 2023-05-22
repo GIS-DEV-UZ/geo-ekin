@@ -1,5 +1,6 @@
 var map = null;
 var geojsonFeatures = null;
+var polygon = null
 var userFeaturesList = [];
 
 if (user_id != null) {
@@ -55,6 +56,15 @@ $(".search_cadastr").click(function (e) {
       polygon.setStyle({ fillColor: "blue" });
       map.fitBounds(polygon.getBounds());
     });
+
+    console.log(document.querySelector('.profile__msg').classList.contains('profile__msg-hide'))
+
+    if(document.querySelector('.profile__msg').classList.contains('profile__msg-hide')){
+      document.querySelector('.profile__msg').classList.remove('profile__msg-hide')
+      document.querySelector('.profile__msg').classList.remove('profile__msg-show')
+      document.querySelector('.profile__msg-content').classList.remove('alert-warning')
+      document.querySelector('.profile__msg-content').classList.remove('alert-success')
+    }
 });
 
 $(".save-polygon").click(function (e) {
@@ -71,6 +81,7 @@ $(".save-polygon").click(function (e) {
   userFeaturesList.forEach((feature, index) => {
     if(feature.cadastral_number == properties.cadastral_number) {
       document.querySelector('.profile__msg').classList.add('profile__msg-show')
+      document.querySelector('.profile__msg-content').classList.add('alert-warning')
       document.querySelector('.profile__msg-content').textContent = "Bunday POLYGON allaqachon qo'shilgan"
       isPolygonHave = true
     }
@@ -88,9 +99,9 @@ $(".save-polygon").click(function (e) {
   setTimeout(()=>{
     document.querySelector('.profile__msg').classList.add('profile__msg-hide')
   },5000)
-  $(".cad_number").val(' ')
+  $(".cad_number").val('')
 
-  
+  map.removeLayer(polygon)
 
   fetch(`/save_polygon/${properties.cadastral_number}`)
     .then((res) => res.json())

@@ -47,7 +47,7 @@
               />
             </a>
 
-            {% if url_for(request.endpoint) != '/user/profile' %}
+            {% if request.path != '/user/profile' or request.path != '/user/polygon/all' %}
             <ul class="header__list">
               <li class="header__item">
                 <a href="" class="header__link">Возможности</a>
@@ -65,8 +65,7 @@
             {% endif %}
 
             <div class="header__buttons">
-              {% if current_user.is_authenticated %} {% if
-              url_for(request.endpoint) != '/user/profile' %}
+              {% if current_user and current_user.is_authenticated %} {% if url_for(request.endpoint) != '/user/profile' %}
               <a
                 href="{{ url_for('user_route.user_profile') }}"
                 type="button"
@@ -102,10 +101,8 @@
       </header>
 
       <main class="main-content">
-        <div class="container">
+        
           {% block container %} {% endblock %}
-          
-        </div>
       </main>
 
 
@@ -168,7 +165,7 @@
 
 
     <div class=" align-items-center justify-content-center w-100 profile__msg">
-      <div class="alert alert-warning text-center w-50 profile__msg-content"></div>
+      <div class="alert text-center w-50 profile__msg-content"></div>
     </div>    
 
     <!-- {% block scripts %}

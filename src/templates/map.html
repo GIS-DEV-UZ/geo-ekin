@@ -1,117 +1,221 @@
-{% extends 'base.html' %} {% block container %}
-<nav aria-label="breadcrumb"  class="main-breadcrumb p-2 bg-light mb-1">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url_for('user_route.user_profile') }}">Kabinet</a></li>
-    <li class="breadcrumb-item">Yer maydonlari</li>
-  </ol>
-</nav>
-<div class="user_polygon">
-  <div id="user-polygon-map"></div>
-  <div class="user__polygon-info">
-    <div class="info__dialog">
-      <div class="info__content">
-        <div class="info__header">
-          <button class="button info__btn-close btn-close"></button>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   <!-- BOOTSTRAP -->
+   <link
+   href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+   rel="stylesheet"
+   integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+   crossorigin="anonymous"
+ />
+
+
+  <!-- CUSTOM STYLES -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}" />
+
+  <!-- LEAFLET -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+
+  <title>agrify</title>
+</head>
+
+<body>
+
+  <div class="sidebar">
+    <a class="active" href="{{url_for('base_route.home')}}">Home</a>
+    <a href="#news">News</a>
+    <a href="#contact">Contact</a>
+    <a href="#about">About</a>
+  </div>
+  
+  <div class="content">
+    <div class="user__polygon-container">
+      <nav aria-label="breadcrumb" class="main-breadcrumb p-2 bg-light mb-0">
+        <ol class="breadcrumb mb-0 p-1">
+          <li class="breadcrumb-item"><a href="{{ url_for('user_route.user_profile') }}">Kabinet</a></li>
+          <li class="breadcrumb-item">Yer maydonlari</li>
+        </ol>
+      </nav>
+      <div class="row user__polygon-row">
+        <div class="col-9">
+          <div class="user_polygon">
+            <div id="user-polygon-map"></div>
+            <div class="user__polygon-info">
+              <div class="info__dialog">
+                <div class="info__content">
+                  <div class="info__header">
+                    <button class="button info__btn-close btn-close"></button>
+                  </div>
+                  <div class="info__body">
+                    <table class="popup_table">
+  
+                    </table>
+                  </div>
+                </div>
+              </div>
+  
+            </div>
+            <div class="spinner_container">
+              <div class="text-center">
+                <div class="spinner-border" style="width: 5rem; height: 5rem" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="info__body">
-          <table class="popup_table">
-            
-          </table>
+        <div class="col-3">
+          <h2 class="active polygon__show-all polygon__heading mt-1">Polygonlar</h2>
+          <div class="vertical-menu polygon-box">
+  
+          </div>
         </div>
       </div>
     </div>
-    
   </div>
-  <div class="spinner_container">
-    <div class="text-center">
-      <div class="spinner-border" style="width: 5rem; height: 5rem" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
-  </div>
-</div>
-<script>
-  let user_polygon_map = L.map("user-polygon-map").setView(
-    [41.311081, 69.240562],
-    13
-  );
-
-  L.tileLayer("http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(user_polygon_map);
 
 
-  const polygon_cad_number = JSON.parse({{polygon_cad_number | tojson}});
-  console.log(polygon_cad_number)
+  <script src="{{url_for('static', filename='script.js')}}"></script>
 
-  let farmers = L.geoJSON(null).addTo(user_polygon_map);
+    <!-- BOOTSTRAP -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
 
-  if (polygon_cad_number) {
-    polygon_cad_number.forEach(cad_num => {
-      fetch(`https://map.agro.uz/api/land_user/read_geom_all?prefix=${cad_num}`)
-        .then(data => data.json())
-        .then(geojsonFeature => {
-          farmers.addData(geojsonFeature)
+  <script>
+    let user_polygon_map = L.map("user-polygon-map").setView(
+      [41.311081, 69.240562],
+      13
+    );
+
+    L.tileLayer("http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(user_polygon_map);
+
+
+    const polygon_cad_number = JSON.parse({{ polygon_cad_number|tojson }});
+
+    let farmers = L.geoJSON(null).addTo(user_polygon_map);
+    let farmerGeojsonFeaturesList = []
+
+
+    if (polygon_cad_number) {
+      polygon_cad_number.forEach(cad_num => {
+        fetch(`https://map.agro.uz/api/land_user/read_geom_all?prefix=${cad_num}`)
+          .then(data => data.json())
+          .then(geojsonFeature => {
+            farmers.addData(geojsonFeature)
+            farmerGeojsonFeaturesList.push(geojsonFeature[0])
+          })
+      })
+
+
+      setTimeout(() => {
+        user_polygon_map.flyToBounds(farmers.getBounds())
+        user_polygon_map.eachLayer((layer) => {
+          if (layer.feature) {
+            forEachFeature(layer.feature, layer)
+          }
+        });
+        document.querySelector('.spinner_container').classList.add('spinner_container-show')
+        polygonBoxData(farmerGeojsonFeaturesList)
+      }, 2000)
+
+
+      function forEachFeature(feature, layer) {
+        layer.on('click', (e) => {
+          user_polygon_map.fitBounds(layer.getBounds(), {
+            padding: [200, 200]
+          });
+          document.querySelector('.user__polygon-info').style.display = 'block'
+          farmers.resetStyle()
+          layer.setStyle({
+            fillColor: '#087f5b',
+            fillOpacity: 0.5,
+            color: '#f03e3e'
+          })
+
+          document.querySelector('.popup_table').innerHTML = `
+            <tr>
+              <th>full_name</th>
+              <td>${feature.properties.full_name}</td>
+            </tr>
+            <tr>
+              <th>cadastral_number</th>
+              <td>${feature.properties.cadastral_number}</td>
+            </tr>
+            <tr>
+              <th>baunit_type_title</th>
+              <td>${feature.properties.baunit_type_title}</td>
+            </tr>
+            <tr>
+              <th>total_areas</th>
+              <td>${feature.properties.total_areas}</td>
+            </tr>
+            <tr>
+              <th>viloyat</th>
+              <td>${feature.properties.viloyat}</td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <a class="user__info-more" href="{{ url_for('user_route.user_polygon') }}?cad_number=${feature.properties.cadastral_number}" >Batafsil</a>
+              </td>
+            </tr>
+          `
         })
-    })
 
-    setTimeout(() => {
-      user_polygon_map.flyToBounds(farmers.getBounds())
-      user_polygon_map.eachLayer((layer) => {
-        if (layer.feature) {
-          forEachFeature(layer.feature, layer)
-        }
-      });
-      document.querySelector('.spinner_container').classList.add('spinner_container-show')
-    }, 2000)
+        const elInfoBtnClose = document.querySelector('.info__btn-close')
+        elInfoBtnClose.addEventListener('click', () => {
+          document.querySelector('.user__polygon-info').style.display = 'none'
+        })
 
-    function forEachFeature(feature, layer) {
-      layer.on('click', (e) => {
-        user_polygon_map.fitBounds(layer.getBounds(),{padding: [200, 200]});
-        document.querySelector('.user__polygon-info').style.display = 'block'
+      };
+
+      function polygonBoxData(features) {
+        features.forEach((feature) => {
+          document.querySelector('.polygon-box').innerHTML += `
+            <p class="cad_num-p" onclick="layerOnClick('${feature.features[0].properties.cadastral_number}')">${feature.features[0].properties.cadastral_number}-kadastr</p>
+          `
+        })
+      }
+
+      function layerOnClick(cad_number) {
+        user_polygon_map.eachLayer((layer) => {
+          let feature = layer.feature
+          if (feature) {
+            if (feature && feature.properties.cadastral_number == cad_number) {
+              user_polygon_map.fitBounds(layer.getBounds());
+              farmers.resetStyle()
+              layer.setStyle({
+                fillColor: '#087f5b',
+                fillOpacity: 0.5,
+                color: '#f03e3e'
+              })
+            } 
+
+          }
+          
+        }) 
+      }
+
+      document.querySelector('.polygon__show-all').addEventListener('click', () => {
         farmers.resetStyle()
-        layer.setStyle({
-          fillColor  : '#087f5b',
-          fillOpacity : 0.5,
-          color: '#f03e3e'
-        })
-
-        document.querySelector('.popup_table').innerHTML = `
-          <tr>
-            <th>full_name</th>
-            <td>${feature.properties.full_name}</td>
-          </tr>
-          <tr>
-            <th>cadastral_number</th>
-            <td>${feature.properties.cadastral_number}</td>
-          </tr>
-          <tr>
-            <th>baunit_type_title</th>
-            <td>${feature.properties.baunit_type_title}</td>
-          </tr>
-          <tr>
-            <th>total_areas</th>
-            <td>${feature.properties.total_areas}</td>
-          </tr>
-          <tr>
-            <th>viloyat</th>
-            <td>${feature.properties.viloyat}</td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <a class="user__info-more" href="{{ url_for('user_route.user_polygon') }}?cad_number=${feature.properties.cadastral_number}" >Batafsil</a>
-            </td>
-          </tr>
-        `
+        user_polygon_map.fitBounds(farmers.getBounds());
       })
 
-      const elInfoBtnClose = document.querySelector('.info__btn-close')
-      elInfoBtnClose.addEventListener('click', () => {
-        document.querySelector('.user__polygon-info').style.display = 'none'
-      })
+    }
+  </script>
 
-    };
+</body>
 
-  }
-</script>
-{% endblock container %}
+</html>

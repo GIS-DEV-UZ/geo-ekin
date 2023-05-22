@@ -1,171 +1,205 @@
-{% extends 'base.html' %} {% block container %}
-<style>
-  .vertical-menu {
-  width: 100%; /* Set a width if you like */
-  height: 80vh;
-  overflow-y: scroll;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- BOOTSTRAP -->
+  <link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+  crossorigin="anonymous"
+/>
 
- p {
-  background-color: #eee; /* Grey background color */
-  color: black; /* Black text color */
-  display: block; /* Make the links appear below each other */
-  padding: 12px; /* Add some padding */
-  text-decoration: none; /* Remove underline from links */
-  cursor: pointer;
-}
 
-p:last-child{
-  margin-bottom: 0;
-}
+ <!-- CUSTOM STYLES -->
+ <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}" />
 
-.vertical-menu p:hover {
-  background-color: #ccc; /* Dark grey background on mouse-over */
-}
+ <!-- LEAFLET -->
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+   integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+ <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+   integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
 
-p.active {
-  background-color: #04AA6D; /* Add a green color to the "active/current" link */
-  color: white;
-}
-</style>
-<nav aria-label="breadcrumb"  class="main-breadcrumb p-2 bg-light mb-1">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url_for('user_route.user_profile') }}">Kabinet</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('user_route.polygon_all') }}">Yer maydonlari</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ cad_number }}</li>
-  </ol>
-</nav>
-<div class="row">
-  <div class="col-9">
-    <div class="user_polygon">
-      <div id="user-polygon-map"></div>
-    </div>
+ <title>agrify</title>
+</head>
+<body>
+  
+  <div class="sidebar">
+    <a class="active" href="{{url_for('base_route.home')}}">Home</a>
+    <a href="#news">News</a>
+    <a href="#contact">Contact</a>
+    <a href="#about">About</a>
   </div>
-  <div class="col-3">
-    <p class="active">Konturlar</p>
-    <div class="vertical-menu contour-box">
-      
-    </div>
-  </div>
-</div>
-</div>
-<script>
-
-  let polygon = null;
-  let user_polygon_map = L.map("user-polygon-map").setView(
-    [41.311081, 69.240562],
-    13
-  );
-
-  L.tileLayer("http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(user_polygon_map);
-
-  const cad_number = "{{ cad_number }}";
-
-  if (cad_number) {
-
-    // GET POLYGON
-
-    fetch(
-      `https://map.agro.uz/api/land_user/read_geom_all?prefix=${cad_number}`
-    )
-      .then((data) => data.json())
-      .then((geojsonFeature) => {
-        
-        polygon = L.geoJSON(geojsonFeature, {
-          onEachFeature: function (feature, layer) {
-            layer.on('click', function (evt) {
-              let property = evt.target.feature.properties
-              let template = `
-                            <table class="popup__table">
-                              <tr>
-                                <th>baunit_type_title</th>
-                                <td>${property.baunit_type_title}</td>
-                              </tr>
-                              <tr>
-                                <th>cadastral_number</th>
-                                <td>${property.cadastral_number}</td>
-                              </tr>
-                            </table>
-                            `
-              polygon.bindPopup(template).openPopup();
-            });
-          }
-        }).addTo(user_polygon_map);
-        polygon.setStyle({
-          fillColor: "transparent",
-          color: '#44e320',
-          weight: 4
-        });
-        user_polygon_map.fitBounds(polygon.getBounds());
-
-      });
-
-
-    // GET POLYGON CONOURS
-
-    let contours_polygon = null
-
-    fetch(`/get_contours/?cadastral_number=${cad_number}`)
-      .then((data) => data.json())
-      .then((feature) => {
-        countourBoxData(feature.data.features)
-        let contourFeature = feature.data
-        contours_polygon = L.geoJSON(contourFeature, {
-          onEachFeature: (feature, layer) => {
+  
+  <div class="content">
+    <div class="user__polygon-container">
+      <nav aria-label="breadcrumb"  class="main-breadcrumb p-2 bg-light mb-0">
+        <ol class="breadcrumb mb-0 p-1">
+          <li class="breadcrumb-item"><a href="{{ url_for('user_route.user_profile') }}">Kabinet</a></li>
+          <li class="breadcrumb-item"><a href="{{ url_for('user_route.polygon_all') }}">Yer maydonlari</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ cad_number }}</li>
+        </ol>
+      </nav>
+      <div class="row user__polygon-row">
+        <div class="col-9">
+          <div class="user_polygon">
+            <div id="user-polygon-map"></div>
+          </div>
+        </div>
+        <div class="col-3">
+          <h2 class="active polygon__heading mt-1">Konturlar</h2>
+          <div class="vertical-menu contour-box">
             
-            contour_number = `${feature.properties.contour_number}`
-            layer.bindTooltip(
-              contour_number,
-              {
-                permanent: true,
-                direction: "center",
-                className: "my-labels"
-              }
-            ).openTooltip()
+          </div>
+        </div>
+      </div>
+    </div>
 
-          },
-          style: {
+
+
+  <script src="{{url_for('static', filename='script.js')}}"></script>
+
+  <!-- BOOTSTRAP -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"
+  ></script>
+
+  <script>
+  
+    let user_polygon_map = L.map("user-polygon-map").setView(
+      [41.311081, 69.240562],
+      13
+    );
+  
+    
+  
+    L.tileLayer("http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(user_polygon_map);
+  
+    const cad_number = "{{ cad_number }}";
+  
+    if (cad_number) {
+  
+      // GET POLYGON
+  
+      fetch(
+        `https://map.agro.uz/api/land_user/read_geom_all?prefix=${cad_number}`
+      )
+        .then((data) => data.json())
+        .then((geojsonFeature) => {
+          
+          polygon = L.geoJSON(geojsonFeature, {
+            onEachFeature: function (feature, layer) {
+              layer.on('click', function (evt) {
+                let property = evt.target.feature.properties
+                let template = `
+                              <table class="popup__table">
+                                <tr>
+                                  <th>baunit_type_title</th>
+                                  <td>${property.baunit_type_title}</td>
+                                </tr>
+                                <tr>
+                                  <th>cadastral_number</th>
+                                  <td>${property.cadastral_number}</td>
+                                </tr>
+                              </table>
+                              `
+                polygon.bindPopup(template).openPopup();
+              });
+            }
+          }).addTo(user_polygon_map);
+          polygon.setStyle({
             fillColor: "transparent",
-            color: "red",
-            weight: 2,
-            dashArray: 4
-          }
-        }).addTo(user_polygon_map);
-
-        
-      })
-
-      function countourBoxData(features){
-
-        features.forEach((feature) => {
-          document.querySelector('.contour-box').innerHTML += `
-            <p class="contour_num-p" onclick="layerOnClick(${feature.properties.contour_number})">${feature.properties.contour_number}-kontur, ${feature.properties.area} gektar</p>
-          `
+            color: '#44e320',
+            weight: 4
+          });
+          user_polygon_map.fitBounds(polygon.getBounds());
+          
+        });
+  
+  
+      // GET POLYGON CONOURS
+  
+      let contours_polygon = null
+  
+      fetch(`/get_contours/?cadastral_number=${cad_number}`)
+        .then((data) => data.json())
+        .then((feature) => {
+          countourBoxData(feature.data.features)
+          
+          let contourFeature = feature.data
+          contours_polygon = L.geoJSON(contourFeature, {
+            onEachFeature: (feature, layer) => {
+              layer.on('click', ()=>{
+                user_polygon_map.fitBounds(layer.getBounds()); 
+                contours_polygon.resetStyle()
+                layer.setStyle({
+                  fillColor : 'blue'
+                })
+              })
+              contour_number = `${feature.properties.contour_number}`
+              layer.bindTooltip(
+                contour_number,
+                {
+                  permanent: true,
+                  direction: "center",
+                  className: "my-labels"
+                }
+              ).openTooltip()
+  
+            },
+            style: {
+              fillColor: "transparent",
+              color: "red",
+              weight: 2,
+              dashArray: 4
+            }
+          }).addTo(user_polygon_map);
+  
+          
         })
-      }
-
-      
-
-      function layerOnClick(contour_num) {        
-        user_polygon_map.eachLayer((layer)=>{
-          let feature = layer.feature
-          if(feature && feature.properties.contour_number == contour_num) {
-            user_polygon_map.fitBounds(layer.getBounds());
-            contours_polygon.resetStyle()
-            layer.setStyle({
-              fillColor : 'blue'
-            })
-          }
-        })
+  
+        function countourBoxData(features){
+  
+          features.forEach((feature) => {
+            document.querySelector('.contour-box').innerHTML += `
+              <p class="contour_num-p" onclick="layerOnClick(${feature.properties.contour_number})">${feature.properties.contour_number}-kontur, ${feature.properties.area} gektar</p>
+            `
+          })
+        }
+  
         
-      }
+  
+        function layerOnClick(contour_num) {        
+          user_polygon_map.eachLayer((layer)=>{
+            let feature = layer.feature
+            if(feature && feature.properties.contour_number == contour_num) {
+              user_polygon_map.fitBounds(layer.getBounds());
+              contours_polygon.resetStyle()
+              layer.setStyle({
+                fillColor : 'blue'
+              })
+            }
+          })
+          
+        }
+  
+    }
+  
+  
+  
+  </script>
 
-  }
+</body>
+</html>
 
 
 
-</script>
-{% endblock container %}
+
+
 

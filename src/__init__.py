@@ -27,4 +27,22 @@ def create_app(config:str):
     with app.test_request_context():
         oneid.Set_Callback(url_for('user_route.get_params'))
 
+    @app.errorhandler(401)
+    def unauthorized(e):
+        return render_template('error/401.html'), 401
+    
+    @app.errorhandler(403)
+    def forbidden(e):
+        return render_template('error/403.html'), 403
+
+    @app.errorhandler(404)
+    def not_found(e):
+        return render_template('error/404.html'), 404
+
+    @app.errorhandler(500)
+    def server_error(e):
+        return render_template('error/500.html'), 500
+    
+    
+
     return app

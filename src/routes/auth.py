@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, redirect
 from src.views.auth import Auth
 from src.views.base import home_controller
 from flask_login import  login_required, logout_user
@@ -20,5 +20,6 @@ def register():
 @auth_router.route('/logout')
 @login_required
 def logout():
+    
     logout_user()
-    return home_controller()
+    return redirect('/')
