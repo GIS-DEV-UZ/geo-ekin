@@ -50,8 +50,8 @@
         </div>
         <div class="col-3">
           <h2 class="active polygon__heading mt-1">Konturlar</h2>
-          <div class="vertical-menu contour-box">
-            
+          <div class="vertical-menu">
+            <div class="contour-box"></div>
           </div>
         </div>
       </div>
@@ -82,6 +82,9 @@
     }).addTo(user_polygon_map);
   
     const cad_number = "{{ cad_number }}";
+    var overlayMaps = {};
+    var layerControl = L.control.layers();
+    layerControl.addTo(user_polygon_map)
   
     if (cad_number) {
   
@@ -119,11 +122,12 @@
             weight: 4
           });
           user_polygon_map.fitBounds(polygon.getBounds());
-          
+          //overlayMaps["contours_polygon"] = polygon
+          layerControl.addOverlay(polygon, 'polygon')
         });
   
   
-      // GET POLYGON CONOURS
+      // GET POLYGON CONTOURS
   
       let contours_polygon = null
   
@@ -160,9 +164,13 @@
               dashArray: 4
             }
           }).addTo(user_polygon_map);
-  
+          
+          layerControl.addOverlay(contours_polygon, 'contours_polygon')
           
         })
+
+        
+
   
         function countourBoxData(features){
   
@@ -175,7 +183,7 @@
   
         
   
-        function layerOnClick(contour_num) {        
+        function layerOnClick(contour_num) {  
           user_polygon_map.eachLayer((layer)=>{
             let feature = layer.feature
             if(feature && feature.properties.contour_number == contour_num) {
