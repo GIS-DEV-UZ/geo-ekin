@@ -3,31 +3,32 @@ var geojsonFeatures = null;
 var polygon = null
 var userFeaturesList = [];
 
-if (user_id != null) {
-  fetch(`/get_polygons/${user_id}`)
-    .then((res) => res.json())
-    .then((res) => {
-      res.polygon_cad_number.forEach((cadastral_number) => {
-        fetch(
-          `https://map.agro.uz/api/land_user/read_geom_all?prefix=${cadastral_number}`
-        )
-          .then((res) => res.json())
-          .then((res) => {
-            let property = res[0].features[0].properties;
-            propObj = {
-              cadastral_number: property.cadastral_number,
-              legal_area: property.legal_area,
-              tuman: property.tuman,
-              arable_areas_with_water: property.arable_areas_with_water,
-              baunit_type_title: property.baunit_type_title,
-            };
+// GET USER POLYGONS
+
+fetch(`/get_polygons`)
+  .then((res) => res.json())
+  .then((res) => {
+    res.polygon_cad_number.forEach((cadastral_number) => {
+      fetch(
+        `https://map.agro.uz/api/land_user/read_geom_all?prefix=${cadastral_number}`
+      )
+        .then((res) => res.json())
+        .then((res) => {
+          let property = res[0].features[0].properties;
+          propObj = {
+            cadastral_number: property.cadastral_number,
+            legal_area: property.legal_area,
+            tuman: property.tuman,
+            arable_areas_with_water: property.arable_areas_with_water,
+            baunit_type_title: property.baunit_type_title,
+          };
 
 
-            makeFeatureTable(propObj);
-          });
-      });
+          makeFeatureTable(propObj);
+        });
     });
-}
+  });
+
 
 $("#exampleModal").on("show.bs.modal", (event) => {
   if (!map) {
@@ -103,7 +104,7 @@ $(".save-polygon").click(function (e) {
 
   map.removeLayer(polygon)
 
-  fetch(`/save_polygon/${properties.cadastral_number}`)
+  fetch(`/save_polygon/?cadastral_number=${properties.cadastral_number}`)
     .then((res) => res.json())
     .then((res) => {
       console.log(res);

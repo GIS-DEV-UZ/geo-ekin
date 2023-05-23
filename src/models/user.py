@@ -34,3 +34,7 @@ class User(BaseModel, UserMixin):
             self.__dict__[key] = value
         db.session.commit()
         return self
+    
+    def get_polygons(self):
+        
+        return [item[0] for item in db.session.query(Polygon.cad_number).filter_by(user_id=self.id).all()]

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, url_for, jsonify
+from flask import Blueprint, request, redirect, url_for, jsonify, current_app
 from flask_login import current_user
 import json, os
 from psycopg2 import connect
@@ -8,14 +8,16 @@ from psycopg2 import connect
 # from flask_login import current_user, login_user, login_required, logout_user
 # from src.utils.ext import oneid, db
 from src.models.polygon import Polygon
+from src.models.user import User
 
 # from src.models.user import User
 
 polygon_router = Blueprint("polygon_route", __name__, url_prefix="/")
 
 
-@polygon_router.route("/save_polygon/<cadastral_number>", methods=["GET", "POST"])
-def save_polygon(cadastral_number):
+@polygon_router.route("/save_polygon/", methods=["GET", "POST"])
+def save_polygon():
+    cadastral_number = request.args.get('cadastral_number')
     polygon = Polygon.query.filter_by(cad_number=cadastral_number).first()
     if polygon:
         if polygon.user_id != current_user.id:
@@ -30,14 +32,14 @@ def save_polygon(cadastral_number):
         return jsonify({"success": True})
 
 
-@polygon_router.route("/get_polygons/<user_id>", methods=["GET", "POST"])
-def get_polygons(user_id):
-    polygon_list = Polygon.query.filter_by(user_id=int(user_id)).all()
-    polygon_cad_numbers = []
-    for polygon in polygon_list:
-        polygon_cad_numbers.append(polygon.cad_number)
+@polygon_router.route("/get_polygons", methods=["GET", "POST"])
+def get_polygons():
+        
+    user = User.query.filter_by(id = current_user.id).first()
+    polygon_cad_numbers = user.get_polygons()
 
     return jsonify({"polygon_cad_number": polygon_cad_numbers})
+
 
 @polygon_router.route("/get_contours/", methods=["GET", "POST"])
 def get_contours():
@@ -48,14 +50,13 @@ def get_contours():
             'msg': "Error: cadastral number not defined"
         }), 400
     
-
-   
+    
     connection = connect(
-        database = 'cropplacement',
-        user = 'odya',
-        password = 'o030101',
-        host = '127.0.0.1',
-        port = 5433
+        database = current_app.config.get('GIS_DB_NAME'),
+        user = current_app.config.get('GIS_DB_USER'),
+        password = current_app.config.get('GIS_DB_PASSWORD'),
+        host = current_app.config.get('GIS_DB_HOST'),
+        port = current_app.config.get('GIS_DB_PORT')
     )
     cursor = connection.cursor()
 

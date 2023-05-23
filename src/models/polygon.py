@@ -11,6 +11,8 @@ class Polygon(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+        
+    # def format_2(self)""
     # style = db.relationship("Style", backref="style", uselist=False)
 
 # class Style(db.Model):
